@@ -1,13 +1,14 @@
 from pymed import PubMed
 from pprint import pprint
 import json
+import openai
 
 def pubMedSearch(search):
     email = "myemail@gmail.com"
     pubmed = PubMed(tool="PubMedSearcher", email=email)
 
     #Carries out the Search through Pubmed API
-    results = pubmed.query(search, max_results=30)
+    results = pubmed.query(search, max_results=5)
     articleList = []
     articleInfo = []
 
@@ -34,3 +35,29 @@ def pubMedSearch(search):
     
     return articleInfo
 
+def get_answer(question,knowledge):
+    openai.api_key = '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'
+
+    prompt = f"Answer the following question based on the knowledge I am providing. Don't answer from what you have been trained. If you can't answer from the knowledge given, tell that you don't have enough information to answer the same: {question} Knowledge: {knowledge} \nAnswer:"
+
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo-16k",
+        messages=[
+            {"role": "system", "content": "You are a physicians assistant."},
+            {"role": "user", "content": prompt}
+        ]
+    )
+
+    return response.choices[0].message["content"].strip()
+
+def main():
+    #Take user Input
+    search = input("Enter your MedGPT Query: ")
+    #Search for the articles in PubMed
+    articles = pubMedSearch(search)
+
+    #Get a response from chatGPT
+    response = get_answer(search, articles)
+    print(response)
+
+main()
