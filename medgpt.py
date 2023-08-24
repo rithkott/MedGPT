@@ -36,7 +36,7 @@ def pubMedSearch(search):
     return articleInfo
 
 def get_answer(question,knowledge):
-    openai.api_key = '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'
+    openai.api_key = ''
 
     prompt = f"Answer the following question based on the knowledge I am providing. Don't answer from what you have been trained. If you can't answer from the knowledge given, tell that you don't have enough information to answer the same: {question} Knowledge: {knowledge} \nAnswer:"
 
